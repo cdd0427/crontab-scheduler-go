@@ -1,1 +1,2 @@
-a crontab work scheduler in distributed systems by golang
+# crontab-scheduler-go
+a crontab work scheduler for distributed systems by golang
