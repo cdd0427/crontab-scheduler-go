@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"runtime"
+	"time"
 )
 
 var (
@@ -36,11 +37,18 @@ func main() {
 	if err = master.InitConig(confFile); err != nil {
 		goto ERR
 	}
+	if err = master.InitJobMgr(); err != nil {
+		goto ERR
+	}
+
 	//start up api http service
 	if err = master.InitAPiServer(); err != nil {
 		goto ERR
 	}
 
+	for {
+		time.Sleep(1 * time.Second)
+	}
 	return
 
 ERR:

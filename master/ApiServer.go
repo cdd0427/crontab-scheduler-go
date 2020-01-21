@@ -1,6 +1,9 @@
 package master
 
 import (
+	"crontab-scheduler-go/common"
+	"encoding/json"
+	"fmt"
 	"net"
 	"net/http"
 	"strconv"
@@ -18,8 +21,40 @@ var (
 )
 
 //Job saving handler
+//POST job={"name":"job1","command":"echo xxx","cron_expr":"* * * * *"}
 func handleJobSave(w http.ResponseWriter, r *http.Request) {
-
+	var (
+		err     error
+		postJob string
+		job     common.Job
+		oldJob  *common.Job
+		resp    []byte
+	)
+	//save jobs to etcd
+	//parsing post form
+	if err = r.ParseForm(); err != nil {
+		goto ERR
+	}
+	//get job from json file and unmarshall it into job struct
+	postJob = r.Form.Get("job")
+	fmt.Println(postJob)
+	if err = json.Unmarshal([]byte(postJob), &job); err != nil {
+		fmt.Println(job)
+		goto ERR
+	}
+	//save job to etcd
+	if oldJob, err = G_jobMgr.SaveJob(&job); err != nil {
+		goto ERR
+	}
+	//normal resp ({"errno":0,"msg":"",data:{...}})
+	if resp, err = common.BuildResponse(0, "success", oldJob); err == nil {
+		w.Write(resp)
+	}
+	return
+ERR:
+	if resp, err = common.BuildResponse(-1, err.Error(), nil); err == nil {
+		w.Write(resp)
+	}
 }
 
 //serveice init
