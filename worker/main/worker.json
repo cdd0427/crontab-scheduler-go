@@ -1,0 +1,8 @@
+{
+  "etcd_end_points": ["47.94.201.24:2379"],
+  "etcd_dial_timeout": 5000,
+  "mongodb_uri": "mongodb://47.94.201.24:27017",
+  "mongodb_connect_timeout": 5000,
+  "job_log_batch_size": 100,
+  "job_log_commit_timeout":1000
+}

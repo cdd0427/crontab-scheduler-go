@@ -136,10 +136,12 @@ ERR:
 //serveice init
 func InitAPiServer() error {
 	var (
-		mux        *http.ServeMux
-		listener   net.Listener
-		httpServer *http.Server
-		err        error
+		mux           *http.ServeMux
+		listener      net.Listener
+		httpServer    *http.Server
+		staticDir     http.Dir
+		staticHandler http.Handler
+		err           error
 	)
 	//router config
 	mux = http.NewServeMux()
@@ -147,6 +149,11 @@ func InitAPiServer() error {
 	mux.HandleFunc("/job/delete", handleJobDelete)
 	mux.HandleFunc("/job/list", handleJobList)
 	mux.HandleFunc("/job/kill", handleJobKill)
+
+	//static file dir
+	staticDir = http.Dir(G_config.Webroot)
+	staticHandler = http.FileServer(staticDir)
+	mux.Handle("/", http.StripPrefix("/", staticHandler))
 
 	//start tcp listening
 	if listener, err = net.Listen("tcp", ":"+strconv.Itoa(G_config.ApiPort)); err != nil {

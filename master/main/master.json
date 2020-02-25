@@ -4,6 +4,7 @@
   "api_write_time_out": 5000,
 
   "etcd_end_points": ["47.94.201.24:2379"],
-  "etcd_dial_timeout": 5000
+  "etcd_dial_timeout": 5000,
 
+  "webroot": "./webroot"
 }
